@@ -25,7 +25,7 @@ SECRET_KEY = 'h9kidpwxu%k=%3ixx&rhluj%6y-3hxlj*t=m02glx90be8o^2-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://lfp.yoximi.com/:8080','192.168.1.69','112.80.53.62','localhost','127.0.0.1','lfp.yoximi.com']
 
 
 # Application definition
@@ -122,3 +122,4 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+LOGIN_URL = '/admin/login'  #这个路径需要根据你网站的实际登陆地址来设置

@@ -15,7 +15,7 @@ def addList(request):
     # 'spe_sort', 'spb_sort', 'sdividend_yield_sort', 'synthetical_sort'
     spe_sort_list = list()
     spb_sort_list = list()
-    sdividend_yield_sort = list()
+    sdividend_yield_sort_list = list()
     synthetical_sort = list()
 
     if os.path.exists(stockDataPath):
@@ -37,11 +37,14 @@ def addList(request):
                             spb_sort_list.append(float(stocklist[spb_idx]))
 
                             sdividend_yield_idx = includes.index('sdividend_yield')
-                            sdividend_yield_sort.append(float(stocklist[sdividend_yield_idx]))
+                            sdividend_yield_sort_list.append(float(stocklist[sdividend_yield_idx]))
 
                      bubble_sort(spe_sort_list)
                      bubble_sort(spb_sort_list)
-                     bubble_sort(sdividend_yield_sort)
+                     bubble_sort(sdividend_yield_sort_list)
+                     sdividend_yield_sort_list.reverse()
+                with open(stockDataPath + _csv, "r") as csvfile:
+                     reader = csv.reader(csvfile)
                      for idx,line in enumerate(reader):
                          if idx == 0:
                              continue
@@ -60,11 +63,19 @@ def addList(request):
                                 oldstock = StockInfo.objects.get(scode=scode)
                                 if oldstock:
                                     stock.id = oldstock.id
-                                    stock.spe
+                                    stock.spe_sort = spe_sort_list.index(float(stock.spe_ttm)) + 1
+                                    stock.spb_sort = spb_sort_list.index(float(stock.spb)) + 1
+                                    stock.sdividend_yield_sort = sdividend_yield_sort_list.index(float(stock.sdividend_yield)) + 1
+                                    stock.synthetical_sort = stock.spe_sort + stock.spb_sort + stock.sdividend_yield_sort
                                     stock.save(force_update=True)
                              except (oldstock.DoesNotExist)as e:
-                                    stock.save()
-                                    print(stock.prn_obj())
+                                     stock.spe_sort = spe_sort_list.index(float(stock.spe_ttm)) + 1
+                                     stock.spb_sort = spb_sort_list.index(float(stock.spb)) + 1
+                                     stock.sdividend_yield_sort = sdividend_yield_sort_list.index(
+                                         float(stock.sdividend_yield)) + 1
+                                     stock.synthetical_sort = stock.spe_sort + stock.spb_sort + stock.sdividend_yield_sort
+                                     stock.save()
+                                     print(stock.prn_obj())
     data = {'code': 0,
 
             'error': os.getcwd(),
@@ -83,13 +94,12 @@ def test(request):
     pass
 
 
-def bubble_sort(arr):
-    length = len(arr)
-    while length > 0:
-        for i in range(length - 1):
-            if arr[i] - arr[i + 1]>0.01:
-                arr[i] = arr[i] + arr[i + 1]
-                arr[i + 1] = arr[i] - arr[i + 1]
-                arr[i] = arr[i] - arr[i + 1]
-        length -= 1
+def bubble_sort(alist):
+    """冒泡排序"""
+    n = len(alist)
+    for j in range(n-1):
+        for i in range(n-1-j):
+            if alist[i] > alist[i+1]:
+                alist[i],alist[i+1] = alist[i+1],alist[i]
+            # print(alist)
 
